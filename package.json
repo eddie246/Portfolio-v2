@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/css": "^11.9.0",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@react-three/cannon": "^6.3.0",
     "@react-three/drei": "^9.8.1",
     "@react-three/fiber": "^8.0.16",
     "@react-three/postprocessing": "^2.3.2",

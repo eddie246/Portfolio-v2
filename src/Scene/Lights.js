@@ -1,7 +1,7 @@
 function Lights() {
   return (
     <>
-      <ambientLight intensity={0.5}></ambientLight>
+      <ambientLight intensity={0.3}></ambientLight>
     </>
   );
 }
