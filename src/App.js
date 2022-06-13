@@ -1,7 +1,7 @@
 import { Suspense, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Physics, Debug } from '@react-three/cannon';
-import styled from '@emotion/styled';
+import { Stats } from '@react-three/drei';
 
 import Experience from './Scene/Experience';
 
@@ -9,49 +9,22 @@ function App() {
   const [keyLog, setKeyLog] = useState({});
 
   function downHandler(e) {
-    if (e.key === 'w') {
+    if (['Space'].includes(e.code) && !e.repeat) {
       setKeyLog((prev) => {
-        return { ...prev, w: true };
+        return { ...prev, [e.code]: true };
       });
-    } else if (e.key === 's') {
+    }
+    if (['KeyW', 'KeyS', 'KeyA', 'KeyD'].includes(e.code)) {
       setKeyLog((prev) => {
-        return { ...prev, s: true };
-      });
-    } else if (e.key === 'a') {
-      setKeyLog((prev) => {
-        return { ...prev, a: true };
-      });
-    } else if (e.key === 'd') {
-      setKeyLog((prev) => {
-        return { ...prev, d: true };
-      });
-    } else if (e.code === 'Space') {
-      setKeyLog((prev) => {
-        return { ...prev, Space: true };
+        return { ...prev, [e.code]: true };
       });
     }
   }
 
   function upHandler(e) {
-    if (e.key === 'w') {
+    if (['KeyW', 'KeyS', 'KeyA', 'KeyD', 'Space'].includes(e.code)) {
       setKeyLog((prev) => {
-        return { ...prev, w: false };
-      });
-    } else if (e.key === 's') {
-      setKeyLog((prev) => {
-        return { ...prev, s: false };
-      });
-    } else if (e.key === 'a') {
-      setKeyLog((prev) => {
-        return { ...prev, a: false };
-      });
-    } else if (e.key === 'd') {
-      setKeyLog((prev) => {
-        return { ...prev, d: false };
-      });
-    } else if (e.code === 'Space') {
-      setKeyLog((prev) => {
-        return { ...prev, Space: false };
+        return { ...prev, [e.code]: false };
       });
     }
   }
@@ -59,6 +32,7 @@ function App() {
   return (
     <Suspense fallback={null}>
       <Canvas tabIndex='0' onKeyDown={downHandler} onKeyUp={upHandler} shadows>
+        <Stats showPanel={0} className='stats' />
         <Physics>
           <Debug color='black'>
             <Experience keyLog={keyLog} />

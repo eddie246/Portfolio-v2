@@ -28,6 +28,7 @@ function Character({ pPos, spherePRef, setPlayerPos }) {
 
   useFrame(() => {
     mountBody('Armature', pPos, 0, -0.3, 0);
+    // mountBody('mixamorigSpine', pPos, 0, -0.3, 0);
   });
 
   function mountBody(boneName, position, x = 0, y = 0, z = 0) {
@@ -61,22 +62,72 @@ function Character({ pPos, spherePRef, setPlayerPos }) {
 
   useConeTwistConstraint(spherePRef, spineRef, {
     pivotA: [0, 0.5, 0],
-    pivotB: [0, -0.4, 0],
+    pivotB: [0, -0.5, 0],
     axisA: [0, 1, 0],
     axisB: [0, 1, 0],
     angle: 0,
     twistAngle: 0,
   });
-  useConeTwistConstraint(hipRef, spineRef, {
-    pivotA: [0, 0.2, 0],
-    pivotB: [0, 0, 0],
+  // useConeTwistConstraint(hipRef, spineRef, {
+  //   pivotA: [0, 0.25, 0],
+  //   pivotB: [0, 0, 0],
+  //   axisA: [0, 1, 0],
+  //   axisB: [0, 1, 0],
+  //   angle: Math.PI / 16,
+  //   twistAngle: Math.PI / 8,
+  // });
+  useConeTwistConstraint(hipRef, spherePRef, {
+    pivotA: [0, 0.25, 0],
+    pivotB: [0, 1, 0],
     axisA: [0, 1, 0],
     axisB: [0, 1, 0],
     angle: Math.PI / 16,
     twistAngle: Math.PI / 8,
   });
 
+  const [rLegRef, rLegApi] = useBindBone(
+    {
+      mass: 0.2,
+      args: [0.18, 0.2, 0.15],
+      linearDamping: 0.99,
+      angularDamping: 0.99,
+      collisionFilterGroup: 1,
+      collisionFilterMask: 1,
+    },
+    hipRef,
+    {
+      pivotA: [0.1, 0.18, 0],
+      pivotB: [0, 0, 0],
+      axisA: [0, 1, 0],
+      axisB: [0, 1, 0],
+      angle: Math.PI / 16,
+      twistAngle: Math.PI / 8,
+    }
+  );
+
+  const [lLegRef, lLegApi] = useBindBone(
+    {
+      mass: 0.2,
+      args: [0.18, 0.2, 0.15],
+      linearDamping: 0.99,
+      angularDamping: 0.99,
+      collisionFilterGroup: 1,
+      collisionFilterMask: 1,
+    },
+    hipRef,
+    {
+      pivotA: [-0.1, 0.18, 0],
+      pivotB: [0, 0, 0],
+      axisA: [0, 1, 0],
+      axisB: [0, 1, 0],
+      angle: Math.PI / 16,
+      twistAngle: Math.PI / 8,
+    }
+  );
+
   useEffect(() => {
+    console.log(nodes);
+    // SPINE
     const unSubSpineP = spineApi.position.subscribe((p) => {
       nodes['mixamorigSpine'].position.set(p[0], p[1] - 0.2, p[2]);
       setPlayerPos(p);
@@ -84,11 +135,39 @@ function Character({ pPos, spherePRef, setPlayerPos }) {
     const unSubSpineR = spineApi.rotation.subscribe((r) => {
       nodes['mixamorigSpine'].rotation.set(...r);
     });
+
+    // LEGS
+    const unSubRLegP = rLegApi.position.subscribe((p) =>
+      nodes['mixamorigRightUpLeg'].position.set(p[0], p[1] + 0.1, p[2])
+    );
+    const unSubRLegR = rLegApi.rotation.subscribe((r) =>
+      nodes['mixamorigRightUpLeg'].rotation.set(...r)
+    );
+
+    const unSubLLegP = lLegApi.position.subscribe((p) =>
+      nodes['mixamorigLeftUpLeg'].position.set(p[0], p[1] + 0.1, p[2])
+    );
+    const unSubLLegR = lLegApi.rotation.subscribe((r) =>
+      nodes['mixamorigLeftUpLeg'].rotation.set(...r)
+    );
+
     return () => {
       unSubSpineP();
       unSubSpineR();
+      unSubRLegP();
+      unSubRLegR();
+      unSubLLegP();
+      unSubLLegR();
     };
   }, []);
+
+  function useBindBone(boxConfig, parentRef, constraintConfig) {
+    const [ref, api] = useBox(() => boxConfig);
+
+    useConeTwistConstraint(ref, parentRef, constraintConfig);
+
+    return [ref, api];
+  }
 
   return (
     <>
@@ -102,6 +181,16 @@ function Character({ pPos, spherePRef, setPlayerPos }) {
         ref={hipRef}
         scale={[0.01, 0.01, 0.01]}
         object={nodes['mixamorigHips']}
+      />
+      <primitive
+        // ref={rLegRef}
+        scale={[0.01, 0.01, 0.01]}
+        object={nodes['mixamorigRightUpLeg']}
+      />
+      <primitive
+        // ref={rLegRef}
+        scale={[0.01, 0.01, 0.01]}
+        object={nodes['mixamorigLeftUpLeg']}
       />
       <primitive
         // ref={spineRef}

@@ -1,4 +1,8 @@
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
+import {
+  OrbitControls,
+  PerspectiveCamera,
+  TrackballControls,
+} from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useState, useRef, useEffect } from 'react';
 import { Vector2, Vector3 } from 'three';
@@ -18,6 +22,7 @@ function Camera({ position, setCamDirect }) {
 
   return (
     <>
+      {/* Default Camera */}
       <PerspectiveCamera
         makeDefault
         fov={60}
@@ -25,14 +30,26 @@ function Camera({ position, setCamDirect }) {
         position={new Vector3(...position).add(vec3)}
       />
 
+      {/* Only purpose is for smoother zoom */}
+      <TrackballControls
+        noPan={true}
+        noRotate={true}
+        dynamicDampingFactor={0.05}
+        zoomSpeed={0.5}
+        keys={[null, null, null]}
+        minDistance={1}
+        maxDistance={10}
+        target={[position[0], position[1], position[2]]}
+      />
+
+      {/* Primary camera controls for 3rd POV */}
       <OrbitControls
         makeDefault
-        target={[position[0], position[1] + 3, position[2]]}
-        // enableZoom={false}
+        dampingFactor={0.12}
+        target={[position[0], position[1], position[2]]}
+        enableZoom={false}
         enablePan={false}
-        // maxAzimuthAngle={Math.PI / 4}
         maxPolarAngle={Math.PI / 1.7}
-        // minAzimuthAngle={-Math.PI / 4}
         minPolarAngle={Math.PI / 6}
       />
     </>

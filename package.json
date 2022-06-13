@@ -8,7 +8,7 @@
     "@emotion/styled": "^11.8.1",
     "@react-three/cannon": "^6.3.0",
     "@react-three/drei": "^9.8.1",
-    "@react-three/fiber": "^8.0.16",
+    "@react-three/fiber": "^8.0.19",
     "@react-three/postprocessing": "^2.3.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
@@ -16,6 +16,7 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
+    "use-ammojs": "^0.2.21",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
